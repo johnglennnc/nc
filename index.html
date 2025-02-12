@@ -12,16 +12,24 @@
 <body>
     <div id="canvas-container"></div>
 
-    <!-- Load Three.js -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/FBXLoader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/controls/OrbitControls.js"></script>
-
     <script>
-        let scene, camera, renderer, controls, raycaster, mouse;
-        let model;
+        function loadScript(url, callback) {
+            let script = document.createElement("script");
+            script.type = "text/javascript";
+            script.src = url;
+            script.onload = callback;
+            document.head.appendChild(script);
+        }
 
-        function init() {
+        function init3DViewer() {
+            if (typeof THREE === "undefined") {
+                console.error("THREE.js did not load.");
+                return;
+            }
+
+            let scene, camera, renderer, controls, raycaster, mouse;
+            let model;
+
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x222222);
 
@@ -67,7 +75,17 @@
             animate();
         }
 
-        window.onload = init;
+        function loadThreeJS() {
+            loadScript("https://cdn.jsdelivr.net/npm/three@0.138.0/build/three.min.js", function() {
+                loadScript("https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/FBXLoader.js", function() {
+                    loadScript("https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/controls/OrbitControls.js", function() {
+                        init3DViewer();
+                    });
+                });
+            });
+        }
+
+        window.onload = loadThreeJS;
     </script>
 
 </body>
