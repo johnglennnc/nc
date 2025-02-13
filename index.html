@@ -27,49 +27,48 @@
                 return;
             }
 
-            let scene, camera, renderer, controls, raycaster, mouse;
-            let model;
-
-            scene = new THREE.Scene();
+            let scene = new THREE.Scene();
             scene.background = new THREE.Color(0x222222);
 
-            camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+            let camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 1.5, 3);
 
-            renderer = new THREE.WebGLRenderer({ antialias: true });
+            let renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.getElementById("canvas-container").appendChild(renderer.domElement);
 
             const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
             scene.add(light);
 
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableZoom = true;
-            controls.enablePan = false;
-            controls.maxDistance = 5;
-            controls.minDistance = 1.5;
+            // Declare controls at the top so it's always accessible
+            let controls;
 
-            raycaster = new THREE.Raycaster();
-            mouse = new THREE.Vector2();
+            if (typeof THREE.OrbitControls !== "undefined") {
+                controls = new THREE.OrbitControls(camera, renderer.domElement);
+                controls.enableZoom = true;
+                controls.enablePan = false;
+                controls.maxDistance = 5;
+                controls.minDistance = 1.5;
+            } else {
+                console.error("OrbitControls is not loaded.");
+            }
 
-            // Load the 3D model
-            const loader = new THREE.FBXLoader();
-            loader.load('loader.load('https://github.com/johnglennnc/nc/raw/main/male%20body.fbx', function(fbx) {
-', function(fbx) {
-                model = fbx;
-                model.scale.set(0.01, 0.01, 0.01); // Adjust scaling if necessary
-                scene.add(model);
-            }, 
+            let loader = new THREE.FBXLoader();
+            loader.load("https://nc-johns-projects-5a4c51a4.vercel.app/male_body.fbx", function (object) {
+                object.scale.set(0.01, 0.01, 0.01); // Adjust scale if necessary
+                scene.add(object);
+                console.log("Model loaded successfully!");
+            },
             function (xhr) {
                 console.log((xhr.loaded / xhr.total * 100) + '% loaded');
             },
             function (error) {
-                console.error('An error occurred while loading the FBX model:', error);
+                console.error("An error occurred while loading the FBX model:", error);
             });
 
             function animate() {
                 requestAnimationFrame(animate);
-                controls.update();
+                if (controls) controls.update(); // ✅ Ensure controls are always updated
                 renderer.render(scene, camera);
             }
 
@@ -91,4 +90,5 @@
 
 </body>
 </html>
+
 
