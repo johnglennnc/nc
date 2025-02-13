@@ -54,7 +54,8 @@
 
             // Load the 3D model
             const loader = new THREE.FBXLoader();
-            loader.load('https://drive.google.com/uc?export=download&id=1RQ8BCIi-7EtiP8fLIFOLwaAF8LFMBws-', function(fbx) {
+            loader.load('loader.load('https://github.com/johnglennnc/nc/raw/main/male%20body.fbx', function(fbx) {
+', function(fbx) {
                 model = fbx;
                 model.scale.set(0.01, 0.01, 0.01); // Adjust scaling if necessary
                 scene.add(model);
